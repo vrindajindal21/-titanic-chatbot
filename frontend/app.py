@@ -376,7 +376,8 @@ with main_col:
         # UI interaction
         with st.spinner("🚢 Navigating the data archives..."):
             try:
-                backend_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
+                # Prioritize Streamlit Secrets, then Env Vars, then Local Fallback
+                backend_url = st.secrets.get("BACKEND_URL", os.getenv("BACKEND_URL", "http://127.0.0.1:8000"))
                 response = requests.post(f"{backend_url}/ask", json={"question": final_query})
                 if response.status_code == 200:
                     data = response.json()
