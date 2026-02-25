@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import os
 from PIL import Image
 import io
 import base64
@@ -375,7 +376,8 @@ with main_col:
         # UI interaction
         with st.spinner("🚢 Navigating the data archives..."):
             try:
-                response = requests.post("http://127.0.0.1:8000/ask", json={"question": final_query})
+                backend_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
+                response = requests.post(f"{backend_url}/ask", json={"question": final_query})
                 if response.status_code == 200:
                     data = response.json()
                     st.session_state.messages.append({
