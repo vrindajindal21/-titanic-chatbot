@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+langchain
+langchain-experimental
+langchain-community
+streamlit
+pandas
+matplotlib
+seaborn
+pillow
+requests
+pydantic
+transformers
+torch
