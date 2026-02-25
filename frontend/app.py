@@ -3,254 +3,338 @@ import requests
 from PIL import Image
 import io
 import base64
+import time
 
 st.set_page_config(
-    page_title="🚢 Titanic Dataset Chatbot",
+    page_title="Titanic AI Explorer",
     page_icon="🚢",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+# Premium Custom CSS
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+    :root {
+        --primary: #1e3a8a;
+        --secondary: #d4af37;
+        --bg-glass: rgba(255, 255, 255, 0.8);
+        --bot-bg: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+        --user-bg: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    }
+
+    .stApp {
+        background-color: #f8fafc;
+    }
+
     .main-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Playfair Display', serif;
+        background: linear-gradient(90deg, #1e3a8a, #d4af37);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 3rem;
-        font-weight: bold;
+        font-size: 3.5rem;
+        font-weight: 700;
         text-align: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.2rem;
     }
+
     .subtitle {
+        font-family: 'Inter', sans-serif;
         text-align: center;
-        color: #666;
-        font-size: 1.1rem;
+        color: #475569;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        font-weight: 400;
+    }
+
+    /* Glassmorphism containers */
+    .glass-card {
+        background: var(--bg-glass);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        margin-bottom: 1rem;
+    }
+
+    /* Professional Chat Bubbles */
+    .chat-bubble {
+        padding: 1rem 1.5rem;
+        border-radius: 20px;
+        margin-bottom: 1rem;
+        max-width: 85%;
+        position: relative;
+        font-family: 'Inter', sans-serif;
+        line-height: 1.5;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .user-bubble {
+        background: var(--user-bg);
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+    }
+
+    .bot-bubble {
+        background: var(--bot-bg);
+        color: #1e293b;
+        margin-right: auto;
+        border-bottom-left-radius: 4px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-bottom: 5px;
+    }
+
+    /* Smooth Transitions */
+    .stButton>button {
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 600;
+        border: none;
+    }
+
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background-color: #0f172a;
+        color: white;
+    }
+
+    .sidebar-header {
+        font-family: 'Playfair Display', serif;
+        color: #d4af37;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Hide default Streamlit elements for cleaner look */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    .stats-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 1rem;
         margin-bottom: 2rem;
     }
-    .chat-container {
-        border: 2px solid #e0e0e0;
-        border-radius: 15px;
-        padding: 1rem;
-        background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .user-message {
-        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-        color: white;
-        padding: 12px 18px;
-        border-radius: 18px 18px 4px 18px;
-        margin: 8px 0;
-        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
-        animation: slideInRight 0.3s ease-out;
-    }
-    .bot-message {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        color: #333;
-        padding: 12px 18px;
-        border-radius: 18px 18px 18px 4px;
-        margin: 8px 0;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        animation: slideInLeft 0.3s ease-out;
-    }
-    .input-container {
+
+    .stat-box {
         background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        margin-top: 1rem;
-    }
-    .delete-btn {
-        opacity: 0.7;
-        transition: opacity 0.2s;
-    }
-    .delete-btn:hover {
-        opacity: 1;
-    }
-    @keyframes slideInRight {
-        from { transform: translateX(50px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideInLeft {
-        from { transform: translateX(-50px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    .stats-card {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
         padding: 1rem;
-        border-radius: 10px;
-        text-align: center;
-        margin: 0.5rem 0;
-        box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3);
-    }
-    .welcome-message {
-        text-align: center;
-        color: #666;
-        padding: 3rem 1rem;
-        background: linear-gradient(145deg, #f8f9ff 0%, #e8f4f8 100%);
         border-radius: 15px;
-        margin: 1rem 0;
-        border: 2px dashed #007bff;
+        text-align: center;
+        flex: 1;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
-    .welcome-message h3 {
-        color: #007bff;
-        margin-bottom: 0.5rem;
+
+    .stat-val {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: #1e3a8a;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Suggestions Grid */
+    .suggestion-btn {
+        background: white;
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin: 0.2rem;
+        display: inline-block;
+        transition: all 0.2s;
+    }
+
+    .suggestion-btn:hover {
+        background: #f1f5f9;
+        border-color: #1e3a8a;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Header with gradient
-st.markdown('<h1 class="main-header">🚢 Titanic Dataset Chatbot</h1>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">💬 Ask me anything about Titanic passengers! Get instant insights with beautiful visualizations.</p>', unsafe_allow_html=True)
-
-# Quick stats
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.markdown("""
-    <div class="stats-card">
-        <h4>📊 891</h4>
-        <small>Passengers</small>
-    </div>
-    """, unsafe_allow_html=True)
-with col2:
-    st.markdown("""
-    <div class="stats-card">
-        <h4>📈 12</h4>
-        <small>Features</small>
-    </div>
-    """, unsafe_allow_html=True)
-with col3:
-    st.markdown("""
-    <div class="stats-card">
-        <h4>🎯 100%</h4>
-        <small>Accurate</small>
-    </div>
-    """, unsafe_allow_html=True)
-
-# Initialize session state for conversation history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Function to add message to history
-def add_message(role, content, image=None):
-    st.session_state.messages.append({
-        "role": role,
-        "content": content,
-        "image": image
-    })
-
-# Function to delete message
-def delete_message(index):
-    if 0 <= index < len(st.session_state.messages):
-        del st.session_state.messages[index]
-
-# Chat container area
-chat_container = st.container()
-
-with chat_container:
-    if not st.session_state.messages:
-        st.markdown("""
-<div class="welcome-message">
-    <h3>🌟 Welcome to Titanic Chat!</h3>
-    <p>I'm your AI assistant for exploring the famous Titanic dataset. Ask me questions like:</p>
-    <ul style="text-align: left; display: inline-block;">
-        <li>"What percentage of passengers were male?"</li>
-        <li>"Show me the age distribution"</li>
-        <li>"How many passengers embarked from each port?"</li>
-    </ul>
-</div>
-""", unsafe_allow_html=True)
-    else:
-        for i, message in enumerate(st.session_state.messages):
-            if message["role"] == "user":
-                # User message (right aligned with custom styling)
-                col1, col2 = st.columns([3, 1])
-                with col1:
-                    st.markdown(f"""
-<div style="text-align: right; margin: 10px 0;">
-    <div class="user-message">
-        <strong>👤 You:</strong><br>{message['content']}
-    </div>
-</div>
-""", unsafe_allow_html=True)
-                with col2:
-                    if st.button("❌", key=f"delete_user_{i}", help="Delete message", type="secondary"):
-                        delete_message(i)
-                        st.rerun()
-            else:
-                # Bot message (left aligned with custom styling)
-                col1, col2 = st.columns([1, 3])
-                with col1:
-                    if st.button("❌", key=f"delete_bot_{i}", help="Delete message", type="secondary"):
-                        delete_message(i)
-                        st.rerun()
-                with col2:
-                    st.markdown(f"""
-<div class="bot-message">
-    <strong>🤖 Titanic Assistant:</strong><br>{message['content']}
-</div>
-""", unsafe_allow_html=True)
-                    if message["image"]:
-                        image_data = base64.b64decode(message["image"].split(",")[1])
-                        st.image(Image.open(io.BytesIO(image_data)), use_container_width=True, caption="📊 Visualization")
-
-
-# Input area with custom styling
-
-col1, col2 = st.columns([5, 1])
-
-with col1:
-    question = st.text_input(
-        "💭 Ask your question:",
-        key="question_input",
-        placeholder="e.g., What was the average ticket fare?",
-        label_visibility="collapsed"
-    )
-
-with col2:
-    ask_clicked = st.button("🚀 Send", use_container_width=True, type="primary")
-
-if ask_clicked and question.strip():
-    # Add user message
-    add_message("user", question.strip())
-
-    try:
-        with st.spinner("🔍 Analyzing Titanic data... Please wait!"):
-            response = requests.post(
-                "http://127.0.0.1:8000/ask",
-                json={"question": question}
-            )
-
-        if response.status_code == 200:
-            data = response.json()
-            # Add bot response
-            add_message("assistant", data["answer"], data.get("image"))
-            st.success("✅ Response received!")
-            st.rerun()
-        else:
-            st.error(f"❌ Backend error: {response.text}")
-
-    except Exception as e:
-        st.error(f"❌ Connection error: {str(e)}")
-
-# Clear history button with better styling
-if st.session_state.messages:
+# Sidebar Configuration
+with st.sidebar:
+    st.markdown('<div class="sidebar-header">🚢 Voyage Insights</div>', unsafe_allow_html=True)
+    st.info("Explore the tragedy and triumph of the RMS Titanic through data-driven AI analysis.")
+    
+    st.markdown("### 🔍 Feature Explorer")
+    if st.button("📊 Passenger Demographics", use_container_width=True):
+        st.session_state.feature_trigger = "tell me everything about the ages"
+    if st.button("🔗 Survival Correlations", use_container_width=True):
+        st.session_state.feature_trigger = "show me all correlations"
+    if st.button("💰 Fare & Class Analysis", use_container_width=True):
+        st.session_state.feature_trigger = "average fares by class"
+    if st.button("🚢 Cabin Deck Mapping", use_container_width=True):
+        st.session_state.feature_trigger = "survival rates by cabin deck"
+    
     st.markdown("---")
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("🗑️ 🧹 Clear Entire Conversation", use_container_width=True, type="secondary"):
-            st.session_state.messages = []
-            st.success("🧹 Conversation cleared! Fresh start! ✨")
-            st.rerun()
+    st.markdown("### 💡 FAQ")
+    with st.expander("How accurate is this?"):
+        st.write("Using the official 891-passenger training set. Calculations are 100% deterministic based on this data.")
+    
+    if st.button("🗑️ Clear Archive", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
+
+    st.markdown("---")
+    st.caption("Developed by Vrinda Jindal")
+
+# Main Content
+main_col, side_col = st.columns([3, 1])
+
+with main_col:
+    st.markdown('<h1 class="main-header">RMS Titanic Explorer</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">An AI-powered dive into history through the lens of data</p>', unsafe_allow_html=True)
+
+    # Stats Ribbon
+    st.markdown("""
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-val">891</div>
+            <div class="stat-label">Manifest</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-val">38.4%</div>
+            <div class="stat-label">Survival</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-val">12</div>
+            <div class="stat-label">Dimensions</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Chat Container
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    chat_placeholder = st.container()
+
+    with chat_placeholder:
+        if not st.session_state.messages:
+            st.markdown("""
+            <div class="glass-card" style="text-align: center; border-left: 5px solid #d4af37;">
+                <h3>⚓ Welcome Aboard</h3>
+                <p>I can help you analyze the passenger manifest, visualize demographics, and uncover patterns. 
+                Ask me anything about the manifest or select a suggestion below.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        for i, msg in enumerate(st.session_state.messages):
+            role_class = "user-bubble" if msg["role"] == "user" else "bot-bubble"
+            avatar = "👤" if msg["role"] == "user" else "🤖"
+            
+            # Clean content to prevent HTML breaking
+            display_content = msg['content'].replace('\n', '<br>')
+            
+            st.markdown(f"""
+            <div class="chat-bubble {role_class}">
+                <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 5px;">{avatar} {msg['role'].upper()}</div>
+                {display_content}
+            </div>
+            """, unsafe_allow_html=True)
+            
+            if msg.get("image"):
+                try:
+                    image_data = base64.b64decode(msg["image"].split(",")[1])
+                    st.image(Image.open(io.BytesIO(image_data)), use_container_width=True)
+                except:
+                    st.error("Could not render visualization archive.")
+
+    # Input Section
+    st.markdown("---")
+    
+    # Suggestions
+    st.markdown("**Try asking:**")
+    cols = st.columns(3)
+    suggestions = [
+        "What was the survival rate of first class?",
+        "Show me the age distribution",
+        "Who was the oldest passenger?"
+    ]
+    
+    selected_query = None
+    for i, suggestion in enumerate(suggestions):
+        if cols[i].button(suggestion, key=f"sug_{i}", use_container_width=True):
+            selected_query = suggestion
+
+    # Input Bar
+    with st.container():
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            user_input = st.text_input("Message the manifestation...", placeholder="e.g., How many children were on board?", label_visibility="collapsed")
+        with col2:
+            send_btn = st.button("⚓ Send", type="primary", use_container_width=True)
+
+    # Determine final query from text input, suggestions, or sidebar features
+    final_query = None
+    if selected_query:
+        final_query = selected_query
+    elif send_btn and user_input:
+        final_query = user_input
+    elif "feature_trigger" in st.session_state and st.session_state.feature_trigger:
+        final_query = st.session_state.feature_trigger
+        st.session_state.feature_trigger = None # Clear after use
+
+    if final_query:
+        # Add user message
+        st.session_state.messages.append({"role": "user", "content": final_query})
+        
+        # UI interaction
+        with st.spinner("🚢 Navigating the data archives..."):
+            try:
+                response = requests.post("http://127.0.0.1:8000/ask", json={"question": final_query})
+                if response.status_code == 200:
+                    data = response.json()
+                    st.session_state.messages.append({
+                        "role": "assistant", 
+                        "content": data["answer"], 
+                        "image": data.get("image")
+                    })
+                    st.rerun()
+                else:
+                    st.error("Telegraph interrupted. Backend unreachable.")
+            except Exception as e:
+                st.error(f"Collision detected: {str(e)}")
+
+with side_col:
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown("### 📊 Metrics Hub")
+    st.metric("Total Records", "891", delta="Full Set")
+    st.metric("Searchable Names", "891", delta="100%")
+    st.metric("Visualizations", "15+", delta="Available")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('<div class="glass-card" style="background: #1e3a8a; color: white;">', unsafe_allow_html=True)
+    st.markdown("### 💡 Pro Tip")
+    st.write("You can search for specific people! Try 'Who is Jack Fortune?' or 'Search for passenger 303'.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer
-st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: #666; padding: 1rem;">
-    <small>Built with ❤️ using FastAPI, Streamlit & Python | Data: Titanic Dataset</small>
+<div style="text-align: center; margin-top: 50px; padding: 20px; color: #94a3b8; font-size: 0.8rem;">
+    RMS Titanic AI Explorer &copy; 2026 | Built for Historical Research
 </div>
 """, unsafe_allow_html=True)
