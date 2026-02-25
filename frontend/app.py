@@ -353,11 +353,12 @@ with main_col:
 
     # Input Bar
     with st.container():
-        col1, col2 = st.columns([5, 1])
-        with col1:
-            user_input = st.text_input("Message the manifestation...", placeholder="e.g., How many children were on board?", label_visibility="collapsed")
-        with col2:
-            send_btn = st.button("⚓ Send", type="primary", use_container_width=True)
+        with st.form("chat_input_form", clear_on_submit=True):
+            col1, col2 = st.columns([5, 1])
+            with col1:
+                user_input = st.text_input("Message the manifestation...", placeholder="e.g., How many children were on board?", label_visibility="collapsed")
+            with col2:
+                send_btn = st.form_submit_button("⚓ Send", use_container_width=True)
 
     # Determine final query from text input, suggestions, or sidebar features
     final_query = None
