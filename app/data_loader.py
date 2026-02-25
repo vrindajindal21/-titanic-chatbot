@@ -13,6 +13,6 @@ def load_titanic_data(path=None):
 
 # Example: preprocessing
 def preprocess(df):
-    df['Age'].fillna(df['Age'].median(), inplace=True)
-    df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+    df['Age'] = df['Age'].fillna(df['Age'].median())
+    df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
     return df

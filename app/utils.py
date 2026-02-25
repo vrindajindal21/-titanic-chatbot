@@ -4,6 +4,17 @@ import io
 import base64
 import pandas as pd
 import numpy as np
+import re
+
+
+def _fig_to_base64():
+    """Helper to convert current matplotlib figure to base64 string"""
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+    encoded = base64.b64encode(buf.read()).decode()
+    plt.close()
+    return f"data:image/png;base64,{encoded}"
 
 def get_percentage_male(df):
     male_count = df[df['Sex']=='male'].shape[0]
@@ -19,23 +30,13 @@ def plot_age_histogram(df):
     plt.figure(figsize=(8,5))
     sns.histplot(df['Age'], bins=30, kde=True)
     plt.title('Age Distribution of Titanic Passengers')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_embarked_bar(df):
     plt.figure(figsize=(8,5))
     sns.countplot(x='Embarked', data=df)
     plt.title('Passengers Embarked from Each Port')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 # New utility functions for expanded questions
 def survival_rate(df):
@@ -80,12 +81,7 @@ def plot_survival_by_class(df):
     plt.title('Survival Rate by Passenger Class')
     plt.ylabel('Survival Rate (%)')
     plt.xlabel('Passenger Class')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_survival_by_gender(df):
     plt.figure(figsize=(8,5))
@@ -94,12 +90,7 @@ def plot_survival_by_gender(df):
     plt.title('Survival Rate by Gender')
     plt.ylabel('Survival Rate (%)')
     plt.xlabel('Gender')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_class_distribution(df):
     plt.figure(figsize=(8,5))
@@ -108,12 +99,7 @@ def plot_class_distribution(df):
     plt.title('Passenger Class Distribution')
     plt.ylabel('Number of Passengers')
     plt.xlabel('Passenger Class')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_fare_distribution(df):
     plt.figure(figsize=(8,5))
@@ -121,19 +107,18 @@ def plot_fare_distribution(df):
     plt.title('Fare Distribution of Titanic Passengers')
     plt.xlabel('Fare ($)')
     plt.ylabel('Number of Passengers')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 # Additional utility functions for comprehensive questions
 def youngest_passenger(df):
-    return df['Age'].min()
+    min_age = df['Age'].min()
+    names = df[df['Age'] == min_age]['Name'].tolist()
+    return {"age": min_age, "names": names}
 
 def oldest_passenger(df):
-    return df['Age'].max()
+    max_age = df['Age'].max()
+    names = df[df['Age'] == max_age]['Name'].tolist()
+    return {"age": max_age, "names": names}
 
 def children_count(df):
     return len(df[df['Age'] < 18])
@@ -167,12 +152,7 @@ def plot_survival_counts(df):
     plt.title('Survival Counts of Titanic Passengers')
     plt.ylabel('Number of Passengers')
     plt.xlabel('Survival Status')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 # Additional comprehensive utility functions
 def age_groups_analysis(df):
@@ -211,6 +191,37 @@ def correlation_class_survival(df):
     correlation = df[['Pclass', 'Survived']].corr().iloc[0, 1]
     return round(correlation, 3)
 
+def correlation_age_class(df):
+    """Correlation between age and passenger class"""
+    correlation = df[['Age', 'Pclass']].dropna().corr().iloc[0, 1]
+    return round(correlation, 3)
+
+def correlation_age_fare(df):
+    """Correlation between age and fare"""
+    correlation = df[['Age', 'Fare']].dropna().corr().iloc[0, 1]
+    return round(correlation, 3)
+
+def find_passengers_by_name(df, name_query):
+    """Search for passengers by name"""
+    results = df[df['Name'].str.contains(name_query, case=False, na=False)]
+    return results
+
+def get_passenger_by_id(df, passenger_id):
+    """Get a single passenger by ID"""
+    try:
+        passenger_id = int(passenger_id)
+        result = df[df['PassengerId'] == passenger_id]
+        return result
+    except:
+        return pd.DataFrame()
+
+def column_total(df, column):
+    """Calculate total for a numeric column"""
+    if column in df.columns and pd.api.types.is_numeric_dtype(df[column]):
+        return df[column].sum()
+    return None
+
+
 def average_age_by_class(df):
     """Average age by passenger class"""
     return df.groupby('Pclass')['Age'].mean().round(1)
@@ -247,12 +258,7 @@ def plot_age_groups(df):
     plt.ylabel('Number of Passengers')
     plt.xlabel('Age Group')
     plt.xticks(rotation=45)
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_survival_by_age_group(df):
     """Plot survival rates by age group"""
@@ -263,12 +269,7 @@ def plot_survival_by_age_group(df):
     plt.ylabel('Survival Rate (%)')
     plt.xlabel('Age Group')
     plt.xticks(rotation=45)
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_family_size_survival(df):
     """Plot survival rates by family size"""
@@ -279,18 +280,12 @@ def plot_family_size_survival(df):
     plt.ylabel('Survival Rate (%)')
     plt.xlabel('Family Size (including passenger)')
     plt.grid(True, alpha=0.3)
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 # Advanced analysis functions for complete dataset coverage
 
 def extract_titles(df):
     """Extract titles from passenger names"""
-    import re
     titles = []
     for name in df['Name']:
         # Extract title using regex
@@ -431,14 +426,13 @@ def passenger_id_patterns(df):
         'is_sequential': df['PassengerId'].is_monotonic_increasing
     }
 
-def comprehensive_statistics(df):
+def comprehensive_statistics(df: pd.DataFrame):
     """Generate comprehensive statistical summary"""
-    stats = {}
-
-    # Basic counts
-    stats['total_passengers'] = len(df)
-    stats['survived'] = df['Survived'].sum()
-    stats['survival_rate'] = (stats['survived'] / stats['total_passengers']) * 100
+    stats = {
+        'total_passengers': int(len(df)),
+        'survived': int(df['Survived'].sum()),
+        'survival_rate': float((df['Survived'].sum() / len(df)) * 100)
+    }
 
     # Age statistics (excluding missing)
     age_data = df['Age'].dropna()
@@ -446,6 +440,10 @@ def comprehensive_statistics(df):
     stats['age_median'] = age_data.median()
     stats['age_min'] = age_data.min()
     stats['age_max'] = age_data.max()
+    
+    # Names for extremes
+    stats['youngest_names'] = df[df['Age'] == stats['age_min']]['Name'].tolist()
+    stats['oldest_names'] = df[df['Age'] == stats['age_max']]['Name'].tolist()
 
     # Fare statistics
     stats['fare_mean'] = df['Fare'].mean()
@@ -454,14 +452,14 @@ def comprehensive_statistics(df):
     stats['fare_max'] = df['Fare'].max()
 
     # Class distribution
-    stats['class_distribution'] = df['Pclass'].value_counts().to_dict()
+    stats['class_distribution'] = df['Pclass'].value_counts().to_dict()  # type: ignore
 
     # Gender distribution
-    stats['gender_distribution'] = df['Sex'].value_counts().to_dict()
+    stats['gender_distribution'] = df['Sex'].value_counts().to_dict()  # type: ignore
 
     # Port distribution
     port_dist = df['Embarked'].value_counts().to_dict()
-    stats['port_distribution'] = {k: v for k, v in port_dist.items() if pd.notna(k)}
+    stats['port_distribution'] = {k: v for k, v in port_dist.items() if pd.notna(k)}  # type: ignore
 
     return stats
 
@@ -478,12 +476,7 @@ def plot_title_survival(df):
     # Add count labels
     for i, (idx, row) in enumerate(title_data.iterrows()):
         plt.text(i, row['Survival_Rate'] + 1, f'n={int(row["Count"])}', ha='center', va='bottom')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_deck_survival(df):
     """Plot survival rates by deck"""
@@ -497,12 +490,7 @@ def plot_deck_survival(df):
     # Add count labels
     for i, (idx, row) in enumerate(deck_data.iterrows()):
         plt.text(i, row['Survival_Rate'] + 1, f'n={int(row["Count"])}', ha='center', va='bottom')
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png")
-    buf.seek(0)
-    encoded = base64.b64encode(buf.read()).decode()
-    plt.close()
-    return f"data:image/png;base64,{encoded}"
+    return _fig_to_base64()
 
 def plot_missing_data(df):
     """Plot missing data patterns"""

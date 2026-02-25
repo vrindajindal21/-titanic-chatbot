@@ -148,23 +148,22 @@ def delete_message(index):
     if 0 <= index < len(st.session_state.messages):
         del st.session_state.messages[index]
 
-# Chat container with custom styling
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+# Chat container area
 chat_container = st.container()
 
 with chat_container:
     if not st.session_state.messages:
         st.markdown("""
-        <div class="welcome-message">
-            <h3>🌟 Welcome to Titanic Chat!</h3>
-            <p>I'm your AI assistant for exploring the famous Titanic dataset. Ask me questions like:</p>
-            <ul style="text-align: left; display: inline-block;">
-                <li>"What percentage of passengers were male?"</li>
-                <li>"Show me the age distribution"</li>
-                <li>"How many passengers embarked from each port?"</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="welcome-message">
+    <h3>🌟 Welcome to Titanic Chat!</h3>
+    <p>I'm your AI assistant for exploring the famous Titanic dataset. Ask me questions like:</p>
+    <ul style="text-align: left; display: inline-block;">
+        <li>"What percentage of passengers were male?"</li>
+        <li>"Show me the age distribution"</li>
+        <li>"How many passengers embarked from each port?"</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
     else:
         for i, message in enumerate(st.session_state.messages):
             if message["role"] == "user":
@@ -172,12 +171,12 @@ with chat_container:
                 col1, col2 = st.columns([3, 1])
                 with col1:
                     st.markdown(f"""
-                    <div style="text-align: right; margin: 10px 0;">
-                        <div class="user-message">
-                            <strong>👤 You:</strong><br>{message['content']}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+<div style="text-align: right; margin: 10px 0;">
+    <div class="user-message">
+        <strong>👤 You:</strong><br>{message['content']}
+    </div>
+</div>
+""", unsafe_allow_html=True)
                 with col2:
                     if st.button("❌", key=f"delete_user_{i}", help="Delete message", type="secondary"):
                         delete_message(i)
@@ -191,23 +190,16 @@ with chat_container:
                         st.rerun()
                 with col2:
                     st.markdown(f"""
-                    <div class="bot-message">
-                        <strong>🤖 Titanic Assistant:</strong><br>{message['content']}
-                    </div>
-                    """, unsafe_allow_html=True)
+<div class="bot-message">
+    <strong>🤖 Titanic Assistant:</strong><br>{message['content']}
+</div>
+""", unsafe_allow_html=True)
                     if message["image"]:
-                        # Add a nice border to images
-                        st.markdown("""
-                        <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        """, unsafe_allow_html=True)
                         image_data = base64.b64decode(message["image"].split(",")[1])
                         st.image(Image.open(io.BytesIO(image_data)), use_container_width=True, caption="📊 Visualization")
-                        st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
 
 # Input area with custom styling
-st.markdown('<div class="input-container">', unsafe_allow_html=True)
 
 col1, col2 = st.columns([5, 1])
 
@@ -244,8 +236,6 @@ if ask_clicked and question.strip():
 
     except Exception as e:
         st.error(f"❌ Connection error: {str(e)}")
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 # Clear history button with better styling
 if st.session_state.messages:
