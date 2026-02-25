@@ -12,209 +12,282 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Ultra-Premium CSS Overhaul
+# Luxury Nautical Light CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Outfit:wght@300;400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
 
     :root {
-        --primary: #0f172a;
-        --accent: #d4af37;
-        --accent-glow: rgba(212, 175, 55, 0.4);
-        --bg-main: #fcfcfd;
-        --card-bg: rgba(255, 255, 255, 0.9);
+        --primary: #1e3a8a;
+        --secondary: #d4af37;
+        --bg-main: #f8fafc;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --text-main: #1e293b;
+        --text-sub: #64748b;
+        --accent-soft: rgba(212, 175, 55, 0.1);
     }
 
-    /* General Body Styling */
+    /* Elegant Light Background */
     .stApp {
-        background: radial-gradient(circle at top right, #f8fafc, #eff6ff);
-        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--text-main);
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
+    /* Smooth Entry Animations */
+    @keyframes slideReveal {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
     }
 
-    /* Header Styling */
+    /* Typography */
     .main-header {
         font-family: 'Playfair Display', serif;
-        font-weight: 700;
-        font-style: italic;
-        background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+        background: linear-gradient(to right, #1e3a8a, #d4af37);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        font-size: 4.5rem;
+        font-weight: 900;
         text-align: center;
-        font-size: 4.2rem;
-        margin-top: -2rem;
-        letter-spacing: -1px;
+        margin-bottom: 5px;
+        animation: slideReveal 0.8s ease-out;
     }
 
     .subtitle {
+        font-family: 'Outfit', sans-serif;
         text-align: center;
-        color: #64748b;
+        color: var(--text-sub);
         font-size: 1.1rem;
-        margin-bottom: 3rem;
-        letter-spacing: 2px;
+        font-weight: 500;
+        letter-spacing: 0.25em;
         text-transform: uppercase;
-        font-weight: 300;
+        margin-bottom: 3.5rem;
+        animation: slideReveal 1s ease-out;
     }
 
-    /* Stats Cards with Neumorphism */
-    .premium-stat {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 24px;
-        text-align: center;
-        border: 1px solid #e2e8f0;
-        box-shadow: 20px 20px 60px #d1d9e6, -20px -20px 60px #ffffff;
-        transition: transform 0.3s ease;
+    /* Premium Light Glass Cards */
+    .glass-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 30px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 35px rgba(30, 58, 138, 0.05);
+        margin-bottom: 2rem;
+        animation: slideReveal 1.2s ease-out;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .premium-stat:hover {
+    
+    .glass-card:hover {
         transform: translateY(-5px);
-    }
-    .premium-stat-val {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 700;
-        font-size: 2rem;
-        color: #1e293b;
-        display: block;
-    }
-    .premium-stat-label {
-        font-size: 0.75rem;
-        color: #d4af37;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        box-shadow: 0 25px 50px rgba(30, 58, 138, 0.08);
+        border-color: var(--secondary);
     }
 
-    /* Chat Area Enhancements */
-    .chat-bubble {
-        padding: 1.2rem 1.8rem;
+    /* Polished Stats Ribbon */
+    .stats-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 2rem;
+        margin-bottom: 4rem;
+        padding: 0 5%;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 1.75rem;
         border-radius: 24px;
-        margin-bottom: 1.5rem;
-        line-height: 1.6;
-        font-size: 1.05rem;
-        max-width: 80%;
-        animation: fadeIn 0.4s ease-out both;
+        border: 1px solid #e2e8f0;
+        flex: 1;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-box:hover {
+        border-color: var(--secondary);
+        transform: translateY(-3px);
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+    .stat-val {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 2rem;
+        color: var(--primary);
+    }
+
+    .stat-label {
+        color: var(--text-sub);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    /* Modern Chat Bubbles */
+    .chat-bubble {
+        padding: 1.25rem 1.75rem;
+        border-radius: 24px;
+        max-width: 80%;
+        margin-bottom: 1.5rem;
+        font-family: 'Outfit', sans-serif;
+        line-height: 1.6;
+        animation: slideReveal 0.5s ease-out;
     }
 
     .user-bubble {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        color: #f1f5f9;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
         margin-left: auto;
-        border-bottom-right-radius: 4px;
-        box-shadow: 0 10px 15px -3px rgba(30, 41, 59, 0.2);
+        border-bottom-right-radius: 5px;
+        box-shadow: 0 10px 25px rgba(30, 58, 138, 0.15);
     }
 
     .bot-bubble {
-        background: white;
-        color: #1e293b;
+        background: #ffffff;
+        color: var(--text-main);
         margin-right: auto;
-        border-bottom-left-radius: 4px;
+        border-bottom-left-radius: 5px;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.04);
     }
 
-    /* Sidebar Logo-style Header */
-    .sidebar-brand {
-        text-align: center;
-        padding: 2rem 1rem;
-        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-        border-radius: 0 0 30px 30px;
+    /* Premium Buttons */
+    .stButton>button {
+        background: #ffffff !important;
+        color: var(--primary) !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s !important;
+        box-shadow: 0 2px 50px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    .stButton>button:hover {
+        background: var(--primary) !important;
+        color: white !important;
+        border-color: var(--primary) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    /* Sidebar - Luxury Slate */
+    section[data-testid="stSidebar"] {
+        background: #0f172a !important;
+        border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    /* Force visibility for sidebar content */
+    section[data-testid="stSidebar"] .stMarkdown h3, 
+    section[data-testid="stSidebar"] .stMarkdown p, 
+    section[data-testid="stSidebar"] .stMarkdown span,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] .stExpander p {
+        color: #f8fafc !important;
+    }
+
+    .sidebar-header {
+        font-family: 'Playfair Display', serif;
+        color: var(--secondary);
+        font-size: 1.65rem;
         margin-bottom: 2rem;
-        border-bottom: 1px solid var(--accent);
+        text-align: center;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        padding-bottom: 1rem;
+    }
+    
+    /* FAQ Expander Visibility */
+    section[data-testid="stSidebar"] .styled-expander {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button {
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: #f8fafc !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        background: var(--secondary) !important;
+        color: #0f172a !important;
     }
 
-    /* Image Styling */
-    .stImage img {
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        margin: 1rem 0;
-    }
-
-    /* Hide default Streamlit elements for cleaner look */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    
+    /* Hide default elements */
+    #MainMenu, footer, header {visibility: hidden;}
 </style>
+
+
+
 """, unsafe_allow_html=True)
 
-# Sidebar UI
+# Sidebar Configuration
 with st.sidebar:
+    st.markdown('<div class="sidebar-header">🚢 Voyage Insights</div>', unsafe_allow_html=True)
+    
     st.markdown("""
-    <div class="sidebar-brand">
-        <h2 style="font-family: 'Playfair Display'; color: #d4af37; margin:0;">TITANIC</h2>
-        <small style="color: #94a3b8; letter-spacing: 3px;">RESEARCH LABS</small>
+    <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid var(--secondary); border-radius: 12px; padding: 12px; margin-bottom: 20px;">
+        <p style="color: #d4af37; font-size: 0.85rem; margin: 0;"><strong>System Status:</strong> <span style="color: #4ade80;">● Online</span></p>
+        <p style="color: #94a3b8; font-size: 0.75rem; margin: 5px 0 0 0;">Dataset: train.csv (891 rows)</p>
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("### 🏛️ Data Archives")
-    if st.button("📊 Demographics Panel", use_container_width=True):
+    st.markdown("### 🔍 Feature Explorer")
+    if st.button("📊 Passenger Demographics", use_container_width=True):
         st.session_state.feature_trigger = "tell me everything about the ages"
-    if st.button("🔗 Survival Intelligence", use_container_width=True):
+    if st.button("🔗 Survival Correlations", use_container_width=True):
         st.session_state.feature_trigger = "show me all correlations"
-    if st.button("💰 Economic Analysis", use_container_width=True):
+    if st.button("💰 Fare & Class Analysis", use_container_width=True):
         st.session_state.feature_trigger = "average fares by class"
-    if st.button("⚓ Deck Archeology", use_container_width=True):
+    if st.button("🚢 Cabin Deck Mapping", use_container_width=True):
         st.session_state.feature_trigger = "survival rates by cabin deck"
-
+    
     st.markdown("---")
-    st.markdown("### � Status")
-    st.markdown("""
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-        <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; border: 1px solid #334155;">
-            <small style="color: #64748b;">MANIFEST</small><br>
-            <b style="color: white;">891 Records</b>
-        </div>
-        <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; border: 1px solid #334155;">
-            <small style="color: #64748b;">INTEGRITY</small><br>
-            <b style="color: #10b981;">100%</b>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    if st.button("� Reset Navigation", use_container_width=True):
+    st.markdown("### 💡 FAQ")
+    with st.expander("How accurate is this?"):
+        st.write("Using the official 891-passenger training set. Calculations are 100% deterministic based on this data.")
+    
+    if st.button("🗑️ Clear Archive", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
     st.markdown("---")
-    st.caption(f"Curated by Vrinda Jindal")
-    st.caption("Intelligence Core v3.0 • Premium")
+    st.markdown("""
+    <div style="text-align: center; opacity: 0.7;">
+        <p style="font-size: 0.7rem; color: #94a3b8; margin: 0;">Developed by</p>
+        <p style="font-size: 0.9rem; color: white; font-weight: 600; margin: 0;">Vrinda Jindal</p>
+        <p style="font-size: 0.6rem; color: #d4af37; margin-top: 5px;">VERSION 3.0 • PREMIUM RELEASE</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Main Dashboard
-hero_col, center_col, info_col = st.columns([1, 4, 1])
+# Main Content
+main_col, side_col = st.columns([3.2, 1])
 
-with center_col:
-    st.markdown('<h1 class="main-header">Maritime Intelligence</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">Exploring the final voyage through algorithmic archeology</p>', unsafe_allow_html=True)
+with main_col:
+    st.markdown('<h1 class="main-header">RMS TITANIC</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Official Voyage Ledger & Data Insights</p>', unsafe_allow_html=True)
 
     # Stats Ribbon
-    s1, s2, s3, s4 = st.columns(4)
-    with s1:
-        st.markdown('<div class="premium-stat"><span class="premium-stat-label">Manifest</span><span class="premium-stat-val">891</span></div>', unsafe_allow_html=True)
-    with s2:
-        st.markdown('<div class="premium-stat"><span class="premium-stat-label">Survival</span><span class="premium-stat-val">38%</span></div>', unsafe_allow_html=True)
-    with s3:
-        st.markdown('<div class="premium-stat"><span class="premium-stat-label">Dimensions</span><span class="premium-stat-val">12</span></div>', unsafe_allow_html=True)
-    with s4:
-        st.markdown('<div class="premium-stat"><span class="premium-stat-label">Deck Level</span><span class="premium-stat-val">8</span></div>', unsafe_allow_html=True)
-
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-val">891</div>
+            <div class="stat-label">Manifest</div>
+        </div>
+        <div class="stat-box" style="border-bottom: 3px solid var(--secondary);">
+            <div class="stat-val" style="color: var(--secondary);">38.4%</div>
+            <div class="stat-label">Survival</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-val">12</div>
+            <div class="stat-label">Dimensions</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Chat Container
     if "messages" not in st.session_state:
@@ -225,20 +298,30 @@ with center_col:
     with chat_placeholder:
         if not st.session_state.messages:
             st.markdown("""
-            <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 30px; border: 1px dashed #cbd5e1; margin-bottom: 2rem;">
-                <h3 style="color: #0f172a; font-family: 'Playfair Display'; font-style: italic;">At Your Service, Explorer</h3>
-                <p style="color: #64748b; max-width: 500px; margin: 0 auto;">Inquire about passenger fates, economic disparities, or structural patterns of the RMS Titanic project.</p>
+            <div class="glass-card" style="text-align: center; border-left: 5px solid var(--secondary); background: linear-gradient(to right, #ffffff, #f8fafc);">
+                <div style="font-size: 3.5rem; margin-bottom: 15px;">⚓</div>
+                <h2 style="color: var(--primary); font-family: 'Outfit', sans-serif; font-weight: 800; letter-spacing: -0.02em; font-size: 2.2rem;">Begin Archive Analysis</h2>
+                <p style="color: var(--text-sub); max-width: 75%; margin: 10px auto 25px; line-height: 1.6; font-size: 1.05rem;">
+                    Access the complete 1912 passenger manifest. Query our AI engine to cross-reference demographics, survival statistics, and historical records.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 25px; padding: 15px; background: #f1f5f9; border-radius: 15px; border: 1px solid #e2e8f0;">
+                    <div style="text-align: center;"><div style="color: var(--primary); font-weight: 700;">891</div><div style="font-size: 0.65rem; color: var(--text-sub); font-weight: 600;">PASSENGERS</div></div>
+                    <div style="text-align: center;"><div style="color: var(--secondary); font-weight: 700;">READY</div><div style="font-size: 0.65rem; color: var(--text-sub); font-weight: 600;">DATABASE</div></div>
+                    <div style="text-align: center;"><div style="color: #059669; font-weight: 700;">ACTIVE</div><div style="font-size: 0.65rem; color: var(--text-sub); font-weight: 600;">AI ENGINE</div></div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
         
         for i, msg in enumerate(st.session_state.messages):
             role_class = "user-bubble" if msg["role"] == "user" else "bot-bubble"
-            avatar = "👤" if msg["role"] == "user" else "⚙️"
+            avatar = "👤" if msg["role"] == "user" else "🤖"
+            
+            # Clean content to prevent HTML breaking
             display_content = msg['content'].replace('\n', '<br>')
             
             st.markdown(f"""
             <div class="chat-bubble {role_class}">
-                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; margin-bottom: 8px;">{avatar} {msg['role'].upper()}</div>
+                <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 5px;">{avatar} {msg['role'].upper()}</div>
                 {display_content}
             </div>
             """, unsafe_allow_html=True)
@@ -246,31 +329,36 @@ with center_col:
             if msg.get("image"):
                 try:
                     image_data = base64.b64decode(msg["image"].split(",")[1])
-                    st.image(Image.open(io.BytesIO(image_data)))
+                    st.image(Image.open(io.BytesIO(image_data)), use_container_width=True)
                 except:
-                    st.error("Visualization trace lost.")
+                    st.error("Could not render visualization archive.")
 
-    # Interaction Space
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
-
-    # Suggestions and Input
-    st.markdown("<div style='text-align: center; margin-bottom: 15px;'><small style='color:#94a3b8;'>COMMAND SHORTCUTS</small></div>", unsafe_allow_html=True)
-    cols = st.columns([1,1,1,1,1])
-    s_list = ["Survival", "Ages", "Oldest", "Search", "Missing"]
-    q_list = ["survival rate by class", "age distribution chart", "who was the oldest passenger", "search for passenger 303", "show me missing data"]
+    # Input Section
+    st.markdown("---")
+    
+    # Suggestions
+    st.markdown("**Try asking:**")
+    cols = st.columns(3)
+    suggestions = [
+        "What was the survival rate of first class?",
+        "Show me the age distribution",
+        "Who was the oldest passenger?"
+    ]
     
     selected_query = None
-    for idx, s in enumerate(s_list):
-        if cols[idx].button(s, key=f"s_{idx}", use_container_width=True):
-            selected_query = q_list[idx]
+    for i, suggestion in enumerate(suggestions):
+        if cols[i].button(suggestion, key=f"sug_{i}", use_container_width=True):
+            selected_query = suggestion
 
-    col1, col2 = st.columns([6, 1])
-    with col1:
-        user_input = st.text_input("Enter inquiry...", placeholder="e.g. Visualize the fare distribution", label_visibility="collapsed")
-    with col2:
-        send_btn = st.button("🚀 EXECUTE", type="primary", use_container_width=True)
+    # Input Bar
+    with st.container():
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            user_input = st.text_input("Message the manifestation...", placeholder="e.g., How many children were on board?", label_visibility="collapsed")
+        with col2:
+            send_btn = st.button("⚓ Send", type="primary", use_container_width=True)
 
-    # Process Input Logic
+    # Determine final query from text input, suggestions, or sidebar features
     final_query = None
     if selected_query:
         final_query = selected_query
@@ -278,34 +366,45 @@ with center_col:
         final_query = user_input
     elif "feature_trigger" in st.session_state and st.session_state.feature_trigger:
         final_query = st.session_state.feature_trigger
-        st.session_state.feature_trigger = None
+        st.session_state.feature_trigger = None # Clear after use
 
     if final_query:
+        # Add user message
         st.session_state.messages.append({"role": "user", "content": final_query})
-        with st.spinner("Processing Maritime Logic..."):
+        
+        # UI interaction
+        with st.spinner("🚢 Navigating the data archives..."):
             try:
                 response = requests.post("http://127.0.0.1:8000/ask", json={"question": final_query})
                 if response.status_code == 200:
                     data = response.json()
-                    st.session_state.messages.append({"role": "assistant", "content": data["answer"], "image": data.get("image")})
+                    st.session_state.messages.append({
+                        "role": "assistant", 
+                        "content": data["answer"], 
+                        "image": data.get("image")
+                    })
                     st.rerun()
                 else:
-                    st.error("System Desynchronized.")
+                    st.error("Telegraph interrupted. Backend unreachable.")
             except Exception as e:
-                st.error(f"Logic Fault: {str(e)}")
+                st.error(f"Collision detected: {str(e)}")
 
-# Vertical Accents
-with hero_col:
-    st.markdown("<div style='height: 200px;'></div>", unsafe_allow_html=True)
-    st.markdown("<p style='writing-mode: vertical-rl; text-orientation: mixed; color: #cbd5e1; font-size: 3rem; font-family: Montserrat; letter-spacing: 15px; opacity: 0.3;'>V O Y A G E</p>", unsafe_allow_html=True)
-
-with info_col:
-    st.markdown("<div style='height: 200px;'></div>", unsafe_allow_html=True)
-    st.markdown("<p style='writing-mode: vertical-rl; text-orientation: mixed; color: #cbd5e1; font-size: 3rem; font-family: Montserrat; letter-spacing: 15px; opacity: 0.3;'>D A T A</p>", unsafe_allow_html=True)
+with side_col:
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown("### 📊 Metrics Hub")
+    st.metric("Total Records", "891", delta="Full Set")
+    st.metric("Searchable Names", "891", delta="100%")
+    st.metric("Visualizations", "15+", delta="Available")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('<div class="glass-card" style="background: #1e3a8a; color: white;">', unsafe_allow_html=True)
+    st.markdown("### 💡 Pro Tip")
+    st.write("You can search for specific people! Try 'Who is Jack Fortune?' or 'Search for passenger 303'.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer
 st.markdown("""
 <div style="text-align: center; margin-top: 50px; padding: 20px; color: #94a3b8; font-size: 0.8rem;">
-    RMS Titanic Maritime Intelligence &copy; 2026 | Historical Data Explorer
+    RMS Titanic AI Explorer &copy; 2026 | Built for Historical Research
 </div>
 """, unsafe_allow_html=True)
