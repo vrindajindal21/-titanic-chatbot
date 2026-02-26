@@ -70,7 +70,18 @@ from .utils import (
 )
 from .data_loader import load_titanic_data, preprocess
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+# Add CORS Middleware to allow Streamlit frontend to talk to this backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 # Load dataframe once
 df = preprocess(load_titanic_data())
