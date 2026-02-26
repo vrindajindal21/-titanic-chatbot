@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
 import io
 import base64
 import pandas as pd
@@ -9,6 +7,7 @@ import re
 
 def _fig_to_base64():
     """Helper to convert current matplotlib figure to base64 string"""
+    import matplotlib.pyplot as plt
     buf = io.BytesIO()
     plt.savefig(buf, format="png")
     buf.seek(0)
@@ -27,12 +26,16 @@ def embarked_counts(df):
     return df['Embarked'].value_counts().to_dict()
 
 def plot_age_histogram(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=(8,5))
     sns.histplot(df['Age'], bins=30, kde=True)
     plt.title('Age Distribution of Titanic Passengers')
     return _fig_to_base64()
 
 def plot_embarked_bar(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=(8,5))
     sns.countplot(x='Embarked', data=df)
     plt.title('Passengers Embarked from Each Port')
@@ -75,6 +78,8 @@ def family_size_distribution(df):
     return df_copy['FamilySize'].value_counts().sort_index()
 
 def plot_survival_by_class(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=(8,5))
     survival_rates = df.groupby('Pclass')['Survived'].mean() * 100
     sns.barplot(x=survival_rates.index, y=survival_rates.values)
@@ -84,6 +89,8 @@ def plot_survival_by_class(df):
     return _fig_to_base64()
 
 def plot_survival_by_gender(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=(8,5))
     survival_rates = df.groupby('Sex')['Survived'].mean() * 100
     sns.barplot(x=survival_rates.index, y=survival_rates.values)
@@ -93,6 +100,8 @@ def plot_survival_by_gender(df):
     return _fig_to_base64()
 
 def plot_class_distribution(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=(8,5))
     class_counts = df['Pclass'].value_counts().sort_index()
     sns.barplot(x=class_counts.index, y=class_counts.values)
@@ -102,6 +111,8 @@ def plot_class_distribution(df):
     return _fig_to_base64()
 
 def plot_fare_distribution(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=(8,5))
     sns.histplot(df['Fare'], bins=50, kde=True)
     plt.title('Fare Distribution of Titanic Passengers')
@@ -145,6 +156,8 @@ def passengers_with_family(df):
     return len(df[(df['SibSp'] > 0) | (df['Parch'] > 0)])
 
 def plot_survival_counts(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=(8,5))
     survival_counts = df['Survived'].value_counts().sort_index()
     survival_counts.index = ['Did not survive', 'Survived']
@@ -251,6 +264,7 @@ def gender_distribution_by_class(df):
 
 def plot_age_groups(df):
     """Plot age group distribution"""
+    import matplotlib.pyplot as plt
     age_groups = age_groups_analysis(df)
     plt.figure(figsize=(10,6))
     plt.bar(age_groups.keys(), age_groups.values())
@@ -262,6 +276,7 @@ def plot_age_groups(df):
 
 def plot_survival_by_age_group(df):
     """Plot survival rates by age group"""
+    import matplotlib.pyplot as plt
     survival_rates = survival_by_age_group(df)
     plt.figure(figsize=(8,5))
     plt.bar(survival_rates.keys(), survival_rates.values())
@@ -273,6 +288,7 @@ def plot_survival_by_age_group(df):
 
 def plot_family_size_survival(df):
     """Plot survival rates by family size"""
+    import matplotlib.pyplot as plt
     survival_rates = survival_by_family_size(df)
     plt.figure(figsize=(10,6))
     plt.plot(survival_rates.index, survival_rates.values, marker='o')
@@ -465,6 +481,7 @@ def comprehensive_statistics(df: pd.DataFrame):
 
 def plot_title_survival(df):
     """Plot survival rates by title"""
+    import matplotlib.pyplot as plt
     title_data = title_survival_analysis(df)
     plt.figure(figsize=(12,6))
     title_data = title_data.sort_values('Survival_Rate', ascending=False)
@@ -480,6 +497,7 @@ def plot_title_survival(df):
 
 def plot_deck_survival(df):
     """Plot survival rates by deck"""
+    import matplotlib.pyplot as plt
     deck_data = deck_survival_analysis(df)
     plt.figure(figsize=(10,6))
     deck_data = deck_data.sort_values('Survival_Rate', ascending=False)
@@ -494,6 +512,7 @@ def plot_deck_survival(df):
 
 def plot_missing_data(df):
     """Plot missing data patterns"""
+    import matplotlib.pyplot as plt
     missing_data = missing_data_analysis(df)
     missing_data = missing_data[missing_data['Missing_Count'] > 0]
 

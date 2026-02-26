@@ -86,6 +86,10 @@ app.add_middleware(
 # Load dataframe once
 df = preprocess(load_titanic_data())
 
+@app.get("/")
+async def root():
+    return {"status": "online", "message": "Titanic AI Backend is running"}
+
 class Query(BaseModel):
     question: str
 

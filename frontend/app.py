@@ -256,6 +256,7 @@ with st.sidebar:
         st.session_state.messages = []
         st.rerun()
 
+    # Footer
     st.markdown("---")
     st.markdown("""
     <div style="text-align: center; opacity: 0.7;">
@@ -264,6 +265,16 @@ with st.sidebar:
         <p style="font-size: 0.6rem; color: #d4af37; margin-top: 5px;">VERSION 3.0 • PREMIUM RELEASE</p>
     </div>
     """, unsafe_allow_html=True)
+
+# Wake up backend on load
+backend_url = st.secrets.get("BACKEND_URL", os.getenv("BACKEND_URL", "http://127.0.0.1:8000"))
+if "warmed_up" not in st.session_state:
+    try:
+        # Fast non-blocking ping
+        requests.get(backend_url, timeout=0.1)
+        st.session_state.warmed_up = True
+    except:
+        pass
 
 # Main Content
 main_col, side_col = st.columns([3.2, 1])
